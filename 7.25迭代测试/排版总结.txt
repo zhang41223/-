@@ -1,0 +1,553 @@
+================================================================================
+测试用例Excel排版规范总结 (V3.0)
+用途: 其他AI读取本文件后，可精确复现相同排版的xlsx
+适用: 18.租号商品展示优化 ~ 20.后台优惠券功能优化 及后续所有测试用例Excel
+日期: 2026-07-22
+覆盖文件: 18/19/20号测试用例xlsx
+================================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+一、全局规范
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 字体: 全局统一使用「微软雅黑」
+2. 颜色体系(HEX格式):
+   - 标题字色: #1F2937 (深灰)
+   - 表头背景: #4472C4 (蓝)
+   - 表头字色: #FFFFFF (白)
+   - 斑马纹奇数行: #FFFFFF (白)
+   - 斑马纹偶数行: #F7F9FC (浅灰)
+   - KPI/合计行背景: #EAF2FF (淡蓝)
+   - 边框线色: #D9DEE7 (浅灰)
+   - FAIL标题区背景: #FEF2F2 (浅红)
+   - TWD标题区背景: #FEFCE8 (浅黄)
+3. 优先级体系 (P0-P4，仅字体颜色区分，不改变背景色):
+   - P0(阻断级): #DC2626 (红，粗体) — 核心主流程不可用/资金安全风险/数据丢失
+   - P1(核心功能): #EA580C (橙，粗体) — 主要功能正确性问题，有临时绕过方案
+   - P2(重要功能): #2563EB (蓝，常规) — 非核心功能异常或边界处理不当
+   - P3(一般功能): #6B7280 (灰，常规) — UI展示问题/文案错误/非关键交互异常
+   - P4(优化建议): #9CA3AF (浅灰，常规) — 性能优化/样式微调/兼容性/无障碍
+4. 是否通过列字体颜色:
+   - PASS: #16A34A (绿，粗体)
+   - FAIL: #DC2626 (红，粗体)
+   - TWD:  #CA8A04 (黄，粗体)
+5. 边框: 所有单元格统一使用thin边框，颜色#D9DEE7 (四边相同)
+6. 背景: 仅使用灰白斑马纹(#FFFFFF/#F7F9FC)，不使用任何彩色背景填充
+         优先级列和是否通过列也遵循斑马纹背景，仅通过字体颜色区分
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+二、Sheet结构
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Sheet顺序(从左到右):
+  1. 用例统计
+  2. 缺失分析与优化记录 (可选，视项目需要)
+  3+. 各功能模块用例Sheet (数量不限，建议合并相似模块，总数不超过10个)
+
+其中:
+  - Sheet 1-2 为分析Sheet (无freeze panes)
+  - Sheet 3+ 为用例Sheet (freeze panes = A3，即冻结前2行)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+三、用例Sheet排版 (Sheet 3+)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+【标准列结构】 9列 (A-I)
+  A: 用例编号      宽度16
+  B: 测试项        宽度28~30
+  C: 优先级        宽度8
+  D: 归属版本      宽度10
+  E: 前置条件      宽度28~30
+  F: 输入/执行步骤  宽度44~48
+  G: 预计结果      宽度46
+  H: 实际结果      宽度24~30
+  I: 是否通过      宽度10
+
+【PC/H5变体列结构】 10列 (A-J) — 当用例需区分PC端和H5端时使用
+  A: 用例编号      宽度16
+  B: 测试项        宽度28
+  C: 端标识        宽度8     (值: PC / H5)
+  D: 优先级        宽度8
+  E: 归属版本      宽度10
+  F: 前置条件      宽度30
+  G: 输入/执行步骤  宽度44
+  H: 预计结果      宽度46
+  I: 实际结果      宽度24
+  J: 是否通过      宽度10
+
+【行结构】
+  第1行: 标题行 (合并A1:I1 或 A1:J1)
+  第2行: 表头行
+  第3行起: 数据行
+
+【第1行 - 标题行】
+  - 内容: "{项目名} - {模块名}" (如 "后台优惠券功能优化 - 新建与编辑优惠券")
+  - 合并: A1:I1 (9列) 或 A1:J1 (10列)
+  - 字体: 微软雅黑, 14号, 粗体, 颜色#1F2937
+  - 背景: 无填充(透明)
+  - 对齐: 默认
+
+【第2行 - 表头行】
+  - 内容(9列): 用例编号 | 测试项 | 优先级 | 归属版本 | 前置条件 | 输入/执行步骤 | 预计结果 | 实际结果 | 是否通过
+  - 内容(10列): 用例编号 | 测试项 | 端标识 | 优先级 | 归属版本 | 前置条件 | 输入/执行步骤 | 预计结果 | 实际结果 | 是否通过
+  - 字体: 微软雅黑, 11号, 粗体, 颜色#FFFFFF(白)
+  - 背景: #4472C4(蓝)
+  - 对齐: 水平居中, 垂直居中, 自动换行
+  - 边框: thin, #D9DEE7(四边)
+
+【第3行起 - 数据行】
+  斑马纹规则:
+    - 第3行(数据第1行): #FFFFFF(白)
+    - 第4行(数据第2行): #F7F9FC(浅灰)
+    - 第5行(数据第3行): #FFFFFF(白)
+    - ...交替
+    公式: (row - 3) % 2 == 0 -> 白色; (row - 3) % 2 == 1 -> 浅灰
+
+  各列字体:
+    A列(用例编号): 微软雅黑, 10号, 非粗体, 默认黑色
+    B列(测试项):   微软雅黑, 10号, 非粗体, 默认黑色
+    C列(优先级):   按优先级字体色(见下方), 对齐=居中/居中/换行
+    D列及之后:     微软雅黑, 10号, 非粗体, 默认黑色
+    末列(是否通过): 按PASS/FAIL/TWD字体色(见全局规范), 对齐=居中/居中/换行
+
+  优先级列(C列或D列)字体规则:
+    P0 -> 微软雅黑, 10号, 粗体, #DC2626(红)
+    P1 -> 微软雅黑, 10号, 粗体, #EA580C(橙)
+    P2 -> 微软雅黑, 10号, 非粗体, #2563EB(蓝)
+    P3 -> 微软雅黑, 10号, 非粗体, #6B7280(灰)
+    P4 -> 微软雅黑, 10号, 非粗体, #9CA3AF(浅灰)
+    注意: 仅改变字体颜色和粗细，不改变背景色，背景仍遵循斑马纹
+
+  是否通过列(I列或J列)字体规则:
+    PASS -> 微软雅黑, 10号, 粗体, #16A34A(绿)
+    FAIL -> 微软雅黑, 10号, 粗体, #DC2626(红)
+    TWD  -> 微软雅黑, 10号, 粗体, #CA8A04(黄)
+    注意: 仅改变字体颜色，不改变背景色，背景仍遵循斑马纹
+
+  所有数据列对齐:
+    用例编号/测试项/归属版本/前置条件/输入执行步骤/预计结果/实际结果列:
+      水平=左对齐, 垂直=顶部对齐, 自动换行=True
+    优先级列:        水平=居中, 垂直=居中, 自动换行=True
+    端标识列(PC/H5): 水平=居中, 垂直=居中, 自动换行=True
+    是否通过列:      水平=居中, 垂直=居中, 自动换行=True
+
+  所有数据列边框: thin, #D9DEE7(四边相同)
+  所有数据列背景: 斑马纹(白/浅灰交替)，优先级列和是否通过列也遵循斑马纹
+
+  行高: 每个数据行固定 90
+
+  冻结窗格: A3 (冻结第1-2行)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+四、用例统计Sheet排版 (Sheet 1)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+【列宽】
+  A: 22~30 (模块名)
+  B: 8~10 (用例数)
+  C-G: 各8~10 (P0/P1/P2/P3/P4)
+
+【行结构】
+  第1行: 大标题 "{项目名} - 测试用例统计 (V2.0)"
+    - 合并A1:G1 (或A1:I1)
+    - 字体: 微软雅黑, 14号, 粗体, #1F2937
+    - 背景: 无
+
+  第3行: 小标题 "优先级定义标准:"
+    - 字体: 微软雅黑, 11号, 粗体, #1F2937
+
+  第4-8行: 优先级定义(每行一个级别)
+    A列: 优先级名称(如"P0(阻断级)")
+      - 字体: 微软雅黑, 对应优先级颜色, 粗体按级别(P0-P1粗体, P2-P4非粗体)
+      - 边框: thin #D9DEE7
+    B列: 定义描述
+      - 合并B:G (或B:F)
+      - 字体: 微软雅黑, 10号
+      - 对齐: 左对齐/顶部/换行
+      - 边框: thin #D9DEE7
+
+  第10行: 统计表表头
+    内容: 模块 | 用例数 | P0 | P1 | P2 | P3 | P4
+    - 字体: 微软雅黑, 11号, 粗体, #FFFFFF
+    - 背景: #4472C4
+    - 对齐: 居中/居中/换行
+    - 边框: thin #D9DEE7
+
+  第11行起(数据行): 各模块统计
+    - 斑马纹: (row-11)%2==0->白, (row-11)%2==1->浅灰
+    - A列字体: 微软雅黑, 10号; 对齐: 左对齐/顶部/换行
+    - B-G列字体: 微软雅黑, 10号; 对齐: 居中/居中/换行
+    - 边框: thin #D9DEE7
+
+  合计行:
+    - 字体: 微软雅黑, 11号, 粗体, #1F2937
+    - 背景: #EAF2FF(淡蓝KPI)
+    - 对齐: 居中/居中/换行
+    - 边框: thin #D9DEE7
+
+  == 失败/疑问用例汇总区 (新增) ==
+
+  汇总区位于统计表下方，空1行后开始，包含两个子区域:
+
+  【失败用例汇总 (FAIL)】
+    标题行: "失败用例汇总 (FAIL) — 共N条"
+      - 合并A:E (5列)
+      - 字体: 微软雅黑, 11号, 粗体, #DC2626(红)
+      - 背景: #FEF2F2(浅红)
+      - 边框: thin #D9DEE7
+
+    表头行: 用例编号 | 所属模块 | 优先级 | 测试项 | 实际结果(失败原因)
+      - 字体: 微软雅黑, 10号, 粗体, #FFFFFF
+      - 背景: #4472C4
+      - 对齐: 居中/居中/换行
+      - 边框: thin #D9DEE7
+
+    数据行: 按优先级从高到低排列(P0->P4)
+      - 斑马纹: 白/浅灰交替
+      - 优先级列: 按P0-P4字体颜色规则
+      - 实际结果列: 微软雅黑, 10号, 粗体, #DC2626(红)
+      - 其他列: 微软雅黑, 10号, 非粗体, #1F2937
+      - 边框: thin #D9DEE7
+      - 行高: 28
+
+  【疑问用例汇总 (TWD)】
+    标题行: "疑问用例汇总 (TWD) — 共N条"
+      - 合并A:E (5列)
+      - 字体: 微软雅黑, 11号, 粗体, #CA8A04(黄)
+      - 背景: #FEFCE8(浅黄)
+      - 边框: thin #D9DEE7
+
+    表头行: 用例编号 | 所属模块 | 优先级 | 测试项 | 实际结果(疑问说明)
+      - 字体: 微软雅黑, 10号, 粗体, #FFFFFF
+      - 背景: #4472C4
+      - 对齐: 居中/居中/换行
+      - 边框: thin #D9DEE7
+
+    数据行: 按优先级从高到低排列(P0->P4)
+      - 斑马纹: 白/浅灰交替
+      - 优先级列: 按P0-P4字体颜色规则
+      - 实际结果列: 微软雅黑, 10号, 粗体, #CA8A04(黄)
+      - 其他列: 微软雅黑, 10号, 非粗体, #1F2937
+      - 边框: thin #D9DEE7
+      - 行高: 28
+
+  【底部统计行】
+    内容: 用例失败数=N | 疑问用例数=N
+      - 用例失败数: 微软雅黑, 10号, 粗体, #DC2626(红)
+      - 疑问用例数: 微软雅黑, 10号, 粗体, #CA8A04(黄)
+      - 对齐: 居中/居中
+      - 边框: thin #D9DEE7
+
+  汇总区列宽(5列):
+    A: 20 (用例编号)
+    B: 28 (所属模块)
+    C: 10 (优先级)
+    D: 28 (测试项)
+    E: 42 (实际结果)
+
+  冻结窗格: 无
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+五、缺失分析与优化记录Sheet排版 (Sheet 2，可选)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+【列宽】
+  A: 8~10  (编号)
+  B: 18~28 (缺失/优化项)
+  C: 35~40 (原因分析)
+  D: 35~38 (处理措施)
+  E: 8~10  (严重度/状态)
+  F: 25    (备注，可选)
+
+【行结构】
+  第1行: 大标题 "{项目名} - 缺失分析与优化记录"
+    - 合并A1:F1
+    - 字体: 微软雅黑, 14号, 粗体, #1F2937
+
+  第2行: 表头
+    内容: 编号 | 缺失/优化项 | 原因分析 | 处理措施 | 状态 | 备注
+    - 字体: 微软雅黑, 10号, 粗体, #FFFFFF
+    - 背景: #4472C4
+    - 对齐: 居中/居中/换行
+    - 边框: thin #D9DEE7
+
+  第3行起: 数据行
+    - 斑马纹: (row-3)%2==0->白, (row-3)%2==1->浅灰
+    - 字体: 微软雅黑, 10号, 非粗体
+    - 对齐: 左对齐/顶部/换行 (所有列)
+    - 边框: thin #D9DEE7
+    - 行高: 50
+
+  冻结窗格: 无
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+六、openpyxl代码模板 (可直接复用)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+```python
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
+
+# === 样式常量 ===
+ZEBRA1 = PatternFill(fill_type="solid", fgColor="FFFFFF")       # 白
+ZEBRA2 = PatternFill(fill_type="solid", fgColor="F7F9FC")       # 浅灰
+HEADER_FILL = PatternFill(fill_type="solid", fgColor="4472C4")  # 蓝表头
+HEADER_FONT = Font(name="微软雅黑", size=11, bold=True, color="FFFFFF")
+DATA_FONT = Font(name="微软雅黑", size=10)
+TITLE_FONT = Font(name="微软雅黑", size=14, bold=True, color="1F2937")
+KPI_FILL = PatternFill(fill_type="solid", fgColor="EAF2FF")     # 淡蓝合计
+THIN_BORDER = Border(
+    left=Side(style="thin", color="D9DEE7"),
+    right=Side(style="thin", color="D9DEE7"),
+    top=Side(style="thin", color="D9DEE7"),
+    bottom=Side(style="thin", color="D9DEE7"),
+)
+WRAP = Alignment(horizontal="left", vertical="top", wrap_text=True)
+CENTER = Alignment(horizontal="center", vertical="center", wrap_text=True)
+
+# 优先级字体(仅字体颜色，不改背景)
+P_FONT = {
+    "P0": Font(name="微软雅黑", size=10, bold=True, color="DC2626"),   # 红
+    "P1": Font(name="微软雅黑", size=10, bold=True, color="EA580C"),   # 橙
+    "P2": Font(name="微软雅黑", size=10, color="2563EB"),              # 蓝
+    "P3": Font(name="微软雅黑", size=10, color="6B7280"),              # 灰
+    "P4": Font(name="微软雅黑", size=10, color="9CA3AF"),              # 浅灰
+}
+
+# 是否通过字体(仅字体颜色，不改背景)
+PASS_FONT = Font(name="微软雅黑", size=10, bold=True, color="16A34A")  # 绿
+FAIL_FONT = Font(name="微软雅黑", size=10, bold=True, color="DC2626")  # 红
+TWD_FONT  = Font(name="微软雅黑", size=10, bold=True, color="CA8A04")  # 黄
+PASS_MAP = {"PASS": PASS_FONT, "FAIL": FAIL_FONT, "TWD": TWD_FONT}
+
+# 9列结构
+COLS = ["用例编号", "测试项", "优先级", "归属版本", "前置条件", "输入/执行步骤", "预计结果", "实际结果", "是否通过"]
+WIDTHS = [16, 28, 8, 10, 30, 44, 46, 24, 10]
+
+# 10列结构 (PC/H5变体)
+COLS_PH = ["用例编号", "测试项", "端标识", "优先级", "归属版本", "前置条件", "输入/执行步骤", "预计结果", "实际结果", "是否通过"]
+WIDTHS_PH = [16, 28, 8, 8, 10, 30, 44, 46, 24, 10]
+
+# === 创建用例Sheet (9列标准版) ===
+def create_case_sheet(wb, sheet_name, title, cases):
+    # cases: list of (case_id, title, priority, version, precondition, steps, expected, actual, pass_fail)
+    ws = wb.create_sheet(sheet_name)
+    ncols = 9
+
+    # Row 1: Title
+    ws.cell(1, 1, title).font = TITLE_FONT
+    ws.merge_cells(start_row=1, start_column=1, end_row=1, end_column=ncols)
+
+    # Row 2: Header
+    for c, h in enumerate(COLS, 1):
+        cell = ws.cell(2, c, h)
+        cell.font = HEADER_FONT
+        cell.fill = HEADER_FILL
+        cell.alignment = CENTER
+        cell.border = THIN_BORDER
+
+    # Row 3+: Data
+    for r_idx, case in enumerate(cases, 3):
+        for c_idx, val in enumerate(case, 1):
+            cell = ws.cell(r_idx, c_idx, val)
+            cell.border = THIN_BORDER
+            cell.fill = ZEBRA1 if (r_idx - 3) % 2 == 0 else ZEBRA2
+
+            if c_idx == 3:  # 优先级列
+                cell.font = P_FONT.get(val, DATA_FONT)
+                cell.alignment = CENTER
+            elif c_idx == 9:  # 是否通过列
+                cell.font = PASS_MAP.get(val, DATA_FONT)
+                cell.alignment = CENTER
+            else:
+                cell.font = DATA_FONT
+                cell.alignment = WRAP
+        ws.row_dimensions[r_idx].height = 90
+
+    # Column widths
+    for i, w in enumerate(WIDTHS, 1):
+        ws.column_dimensions[get_column_letter(i)].width = w
+
+    # Freeze panes
+    ws.freeze_panes = "A3"
+    return ws
+
+# === 创建用例统计Sheet ===
+def create_stats_sheet(wb, project_name, module_stats, fail_cases, twd_cases):
+    # module_stats: list of (module_name, total, p0, p1, p2, p3, p4)
+    # fail_cases: list of (case_id, module, priority, test_item, actual_result)
+    # twd_cases: list of (case_id, module, priority, test_item, actual_result)
+    ws = wb.create_sheet("用例统计", 0)
+
+    # Row 1: Title
+    ws.cell(1, 1, project_name + " - 测试用例统计 (V2.0)").font = TITLE_FONT
+    ws.merge_cells("A1:G1")
+
+    # Priority definitions (rows 4-8)
+    ws.cell(3, 1, "优先级定义标准:").font = Font(name="微软雅黑", size=11, bold=True, color="1F2937")
+    p_defs = [
+        ("P0(阻断级)", Font(name="微软雅黑", size=10, bold=True, color="DC2626"),
+         "核心主流程不可用/资金安全风险/数据丢失。发版前必须100%通过"),
+        ("P1(核心功能)", Font(name="微软雅黑", size=10, bold=True, color="EA580C"),
+         "主要功能正确性问题，有临时绕过方案。发版前必须通过"),
+        ("P2(重要功能)", Font(name="微软雅黑", size=10, color="2563EB"),
+         "非核心功能异常或边界处理不当。发版前应通过"),
+        ("P3(一般功能)", Font(name="微软雅黑", size=10, color="6B7280"),
+         "UI展示问题/文案错误/非关键交互异常。发版后修复"),
+        ("P4(优化建议)", Font(name="微软雅黑", size=10, color="9CA3AF"),
+         "性能优化/样式微调/兼容性/无障碍。迭代优化"),
+    ]
+    for i, (p, font, desc) in enumerate(p_defs, 4):
+        ws.cell(i, 1, p).font = font
+        ws.cell(i, 1).border = THIN_BORDER
+        ws.cell(i, 2, desc).font = DATA_FONT
+        ws.cell(i, 2).border = THIN_BORDER
+        ws.cell(i, 2).alignment = WRAP
+        ws.merge_cells(start_row=i, start_column=2, end_row=i, end_column=7)
+
+    # Stats table (row 10+)
+    row_start = 10
+    headers = ["模块", "用例数", "P0", "P1", "P2", "P3", "P4"]
+    for c, h in enumerate(headers, 1):
+        cell = ws.cell(row_start, c, h)
+        cell.font = HEADER_FONT
+        cell.fill = HEADER_FILL
+        cell.alignment = CENTER
+        cell.border = THIN_BORDER
+
+    for r_idx, row_data in enumerate(module_stats, row_start + 1):
+        is_total = (r_idx == row_start + len(module_stats))
+        for c_idx, val in enumerate(row_data, 1):
+            cell = ws.cell(r_idx, c_idx, val)
+            cell.border = THIN_BORDER
+            if is_total:
+                cell.font = Font(name="微软雅黑", size=11, bold=True, color="1F2937")
+                cell.fill = KPI_FILL
+                cell.alignment = CENTER
+            else:
+                cell.fill = ZEBRA1 if (r_idx - row_start - 1) % 2 == 0 else ZEBRA2
+                cell.font = DATA_FONT
+                cell.alignment = WRAP if c_idx == 1 else CENTER
+
+    # Column widths
+    ws.column_dimensions["A"].width = 22
+    for col in ["B", "C", "D", "E", "F", "G"]:
+        ws.column_dimensions[col].width = 8
+
+    # === FAIL/TWD 汇总区 ===
+    current_row = row_start + len(module_stats) + 2  # 空一行
+
+    # FAIL汇总
+    _write_summary_section(ws, current_row, "失败用例汇总 (FAIL) — 共" + str(len(fail_cases)) + "条",
+                           fail_cases, "FEF2F2", "DC2626", "实际结果(失败原因)")
+    current_row += 1 + 1 + len(fail_cases) + 1  # 标题+表头+数据+空行
+
+    # TWD汇总
+    _write_summary_section(ws, current_row, "疑问用例汇总 (TWD) — 共" + str(len(twd_cases)) + "条",
+                           twd_cases, "FEFCE8", "CA8A04", "实际结果(疑问说明)")
+    current_row += 1 + 1 + len(twd_cases) + 1
+
+    # 底部统计
+    ws.cell(current_row, 1, "用例失败数").font = Font(name="微软雅黑", size=10, bold=True, color="DC2626")
+    ws.cell(current_row, 2, len(fail_cases)).font = Font(name="微软雅黑", size=10, bold=True, color="DC2626")
+    ws.cell(current_row, 3, "疑问用例数").font = Font(name="微软雅黑", size=10, bold=True, color="CA8A04")
+    ws.cell(current_row, 4, len(twd_cases)).font = Font(name="微软雅黑", size=10, bold=True, color="CA8A04")
+    for c in range(1, 5):
+        ws.cell(current_row, c).border = THIN_BORDER
+        ws.cell(current_row, c).alignment = CENTER
+
+    # 调整汇总区列宽
+    ws.column_dimensions["A"].width = 20
+    ws.column_dimensions["B"].width = 28
+    ws.column_dimensions["C"].width = 10
+    ws.column_dimensions["D"].width = 28
+    ws.column_dimensions["E"].width = 42
+
+    return ws
+
+def _write_summary_section(ws, start_row, title, cases, bg_color, font_color, result_header):
+    """写入FAIL或TWD汇总区域"""
+    title_fill = PatternFill(fill_type="solid", fgColor=bg_color)
+
+    # 标题行
+    ws.merge_cells(start_row=start_row, start_column=1, end_row=start_row, end_column=5)
+    cell = ws.cell(start_row, 1, title)
+    cell.font = Font(name="微软雅黑", size=11, bold=True, color=font_color)
+    cell.fill = title_fill
+    cell.alignment = Alignment(horizontal="left", vertical="center")
+    for c in range(1, 6):
+        ws.cell(start_row, c).fill = title_fill
+        ws.cell(start_row, c).border = THIN_BORDER
+    ws.row_dimensions[start_row].height = 22
+
+    # 表头行
+    hdr_row = start_row + 1
+    headers = ["用例编号", "所属模块", "优先级", "测试项", result_header]
+    for c, h in enumerate(headers, 1):
+        cell = ws.cell(hdr_row, c, h)
+        cell.font = HEADER_FONT
+        cell.fill = HEADER_FILL
+        cell.alignment = CENTER
+        cell.border = THIN_BORDER
+
+    # 数据行
+    for idx, (case_id, module, priority, test_item, actual) in enumerate(cases):
+        r = hdr_row + 1 + idx
+        zebra = ZEBRA1 if idx % 2 == 0 else ZEBRA2
+        for c_idx, val in enumerate([case_id, module, priority, test_item, actual], 1):
+            cell = ws.cell(r, c_idx, val)
+            cell.border = THIN_BORDER
+            cell.fill = zebra
+            if c_idx == 3:  # 优先级
+                cell.font = P_FONT.get(val, DATA_FONT)
+                cell.alignment = CENTER
+            elif c_idx == 5:  # 实际结果
+                cell.font = Font(name="微软雅黑", size=10, bold=True, color=font_color)
+                cell.alignment = WRAP
+            else:
+                cell.font = DATA_FONT
+                cell.alignment = WRAP
+        ws.row_dimensions[r].height = 28
+```
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+七、关键注意事项
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. 斑马纹是核心视觉规则: 所有数据行(用例Sheet/统计表/缺失分析/FAIL汇总/TWD汇总)均使用白(#FFFFFF)和浅灰(#F7F9FC)交替
+2. 斑马纹起始: 第一个数据行为白色，第二个为浅灰，交替
+3. 优先级不使用背景色: P0-P4仅通过字体颜色和粗细区分，背景色仍遵循斑马纹
+4. 是否通过列不使用背景色: PASS/FAIL/TWD仅通过字体颜色区分，背景色仍遵循斑马纹
+5. 表头统一蓝色: 所有Sheet的表头行均为#4472C4蓝底白字粗体
+6. 合计行特殊: 使用#EAF2FF淡蓝背景 + 粗体
+7. 行高: 用例Sheet数据行=90，缺失分析Sheet数据行=50，FAIL/TWD汇总数据行=28
+8. 冻结窗格: 仅用例Sheet冻结(freeze=A3)，分析Sheet和统计Sheet不冻结
+9. 文本换行: 所有数据单元格均开启wrap_text=True
+10. 步骤和预期结果: 使用"1. xxx\n2. xxx"格式，通过\n换行
+11. openpyxl的ARGB颜色: 前缀00开头(如00FFFFFF)，PatternFill的fgColor使用6位HEX(如FFFFFF)
+12. 去除AI生成的提示语和水印
+13. P1占比控制: P1(含P0)用例数不超过总用例的25%
+14. 模块合并: 相似功能模块应合并，总模块数不超过10个
+15. PC/H5分类: 当用例需区分端类型时，增加"端标识"列(第3列)，使用10列结构
+16. FAIL/TWD汇总: 用例统计Sheet底部必须包含失败用例和疑问用例的汇总区域
+17. 汇总排序: FAIL和TWD用例按优先级从高到低排列(P0->P4)
+18. 文件命名: 桌面目录文件需带数字前缀(如"20.后台优惠券...")
+19. 交付同步: 工作区目录和桌面目录需保持文件同步
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+八、版本变更记录
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+V1.0 (2026-07-17): 初版，基于分销优化2.0，P1-P5优先级体系
+V2.0 (2026-07-17): 统计数据动态计算，P0占比<=15%，术语标准化
+V3.0 (2026-07-22): 重大更新
+  - 优先级体系: P1-P5 -> P0-P4
+  - 优先级颜色映射调整: P0=红粗体, P1=橙粗体, P2=蓝常规, P3=灰常规, P4=浅灰常规
+  - 新增"是否通过"列字体颜色: PASS=绿粗体, FAIL=红粗体, TWD=黄粗体
+  - 行高: 95 -> 90
+  - 用例统计Sheet新增FAIL/TWD用例汇总区域
+  - 新增PC/H5变体10列结构(含端标识列)
+  - 列宽微调: B列28->30, F列44->48, H列18->24~30 (文件20)
+  - 代码模板更新: P_FONT改P0-P4, 新增PASS_MAP, 新增_write_summary_section函数
+  - P1占比标准: <=15% -> <=25% (含P0)
